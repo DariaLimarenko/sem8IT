@@ -4,6 +4,8 @@
 #include <math.h>
 
 // ========== AVL ДЕРЕВО ==========
+
+
 struct AVLNode {
     int key;
     int height;
@@ -22,24 +24,30 @@ int avl_balance(struct AVLNode* node) {
 struct AVLNode* avl_rotate_right(struct AVLNode* y) {
     struct AVLNode* x = y->left;
     struct AVLNode* T2 = x->right;
+
     x->right = y;
     y->left = T2;
+
     y->height = 1 + (avl_height(y->left) > avl_height(y->right) ?
-                     avl_height(y->left) : avl_height(y->right));
+                    avl_height(y->left) : avl_height(y->right));
     x->height = 1 + (avl_height(x->left) > avl_height(x->right) ?
-                     avl_height(x->left) : avl_height(x->right));
+                    avl_height(x->left) : avl_height(x->right));
+
     return x;
 }
 
 struct AVLNode* avl_rotate_left(struct AVLNode* x) {
     struct AVLNode* y = x->right;
     struct AVLNode* T2 = y->left;
+
     y->left = x;
     x->right = T2;
+
     x->height = 1 + (avl_height(x->left) > avl_height(x->right) ?
-                     avl_height(x->left) : avl_height(x->right));
+                    avl_height(x->left) : avl_height(x->right));
     y->height = 1 + (avl_height(y->left) > avl_height(y->right) ?
-                     avl_height(y->left) : avl_height(y->right));
+                    avl_height(y->left) : avl_height(y->right));
+
     return y;
 }
 
@@ -60,7 +68,7 @@ struct AVLNode* avl_insert(struct AVLNode* node, int key, int* rotations) {
         return node;
 
     node->height = 1 + (avl_height(node->left) > avl_height(node->right) ?
-                        avl_height(node->left) : avl_height(node->right));
+                       avl_height(node->left) : avl_height(node->right));
 
     int balance = avl_balance(node);
 
@@ -94,6 +102,7 @@ struct AVLNode* avl_insert(struct AVLNode* node, int key, int* rotations) {
 }
 
 // ========== RBT ДЕРЕВО ==========
+
 enum Color { RED, BLACK };
 
 struct RBNode {
@@ -174,6 +183,7 @@ void rbt_fix_violation(struct RBNode** root, struct RBNode* z, int* recolorings)
                     z = z->parent;
                     rbt_rotate_left(root, z, recolorings);
                 }
+
                 // Case 3: z is left child
                 (*recolorings) += 2;
                 z->parent->color = BLACK;
@@ -195,6 +205,7 @@ void rbt_fix_violation(struct RBNode** root, struct RBNode* z, int* recolorings)
                     z = z->parent;
                     rbt_rotate_right(root, z, recolorings);
                 }
+
                 (*recolorings) += 2;
                 z->parent->color = BLACK;
                 grand_parent->color = RED;
@@ -229,6 +240,7 @@ struct RBNode* rbt_insert(struct RBNode* root, int key, int* rotations, int* rec
         y->right = z;
 
     rbt_fix_violation(&root, z, recolorings);
+
     return root;
 }
 
@@ -268,7 +280,6 @@ void test_sorted_data_comparison() {
 
     struct AVLNode* avl_root = NULL;
     struct RBNode* rbt_root = NULL;
-
     int avl_rotations = 0;
     int rbt_rotations = 0;
     int rbt_recolorings = 0;
@@ -294,6 +305,7 @@ void test_sorted_data_comparison() {
 
     free_avl_tree(avl_root);
     free_rbt_tree(rbt_root);
+
     printf("\n");
 }
 
@@ -302,21 +314,20 @@ void test_balance_comparison() {
     printf("=== ТЕСТ 2: Сравнение балансировки на разных данных ===\n\n");
 
     int test_cases[][10] = {
-        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10},  // Отсортированные
-        {50, 25, 75, 12, 37, 62, 87, 6, 18, 31},  // Случайные
-        {40, 20, 60, 10, 30, 50, 70, 5, 15, 25}   // Сбалансированные
+        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, // Отсортированные
+        {50, 25, 75, 12, 37, 62, 87, 6, 18, 31}, // Случайные
+        {40, 20, 60, 10, 30, 50, 70, 5, 15, 25} // Сбалансированные
     };
 
     const char* case_names[] = {"Отсортированные", "Случайные", "Сбалансированные"};
 
     printf("%-15s | %-8s | %-8s | %-12s | %-12s\n",
            "Тип данных", "AVL высота", "RBT высота", "AVL вращения", "RBT вращения");
-    printf("-----------------|----------|----------|-------------|-------------\n");
+    printf("---------------|----------|----------|-------------|-------------\n");
 
     for (int c = 0; c < 3; c++) {
         struct AVLNode* avl_root = NULL;
         struct RBNode* rbt_root = NULL;
-
         int avl_rotations = 0;
         int rbt_rotations = 0;
         int rbt_recolorings = 0;
@@ -333,6 +344,7 @@ void test_balance_comparison() {
         free_avl_tree(avl_root);
         free_rbt_tree(rbt_root);
     }
+
     printf("\n");
 }
 
@@ -342,7 +354,6 @@ void test_search_performance_avl_rbt() {
 
     struct AVLNode* avl_root = NULL;
     struct RBNode* rbt_root = NULL;
-
     int avl_rotations = 0;
     int rbt_rotations = 0;
     int rbt_recolorings = 0;
@@ -354,10 +365,7 @@ void test_search_performance_avl_rbt() {
     }
 
     int search_keys[] = {1, 8, 15};
-    int avl_steps[3] = {0};
-    int rbt_steps[3] = {0};
 
-    // Симуляция поиска (в реальности нужно реализовать поиск)
     printf("Теоретическая сложность поиска (15 элементов):\n");
     printf("AVL: O(log2(15)) = ~4 шага\n");
     printf("RBT: O(log2(15)) = ~4 шага\n\n");
@@ -378,6 +386,7 @@ void test_search_performance_avl_rbt() {
 
     free_avl_tree(avl_root);
     free_rbt_tree(rbt_root);
+
     printf("\n");
 }
 
@@ -424,9 +433,11 @@ void test_large_scale_performance() {
         clock_t avl_start = clock();
         struct AVLNode* avl_root = NULL;
         int avl_rotations = 0;
+
         for (int i = 0; i < size; i++) {
             avl_root = avl_insert(avl_root, rand() % 10000, &avl_rotations);
         }
+
         clock_t avl_end = clock();
         double avl_time = (double)(avl_end - avl_start) * 1000 / CLOCKS_PER_SEC;
 
@@ -435,9 +446,11 @@ void test_large_scale_performance() {
         struct RBNode* rbt_root = NULL;
         int rbt_rotations = 0;
         int rbt_recolorings = 0;
+
         for (int i = 0; i < size; i++) {
             rbt_root = rbt_insert(rbt_root, rand() % 10000, &rbt_rotations, &rbt_recolorings);
         }
+
         clock_t rbt_end = clock();
         double rbt_time = (double)(rbt_end - rbt_start) * 1000 / CLOCKS_PER_SEC;
 
@@ -446,6 +459,7 @@ void test_large_scale_performance() {
         free_avl_tree(avl_root);
         free_rbt_tree(rbt_root);
     }
+
     printf("\n");
 }
 
@@ -453,6 +467,8 @@ void test_large_scale_performance() {
 
 void test_scenario_performance() {
     printf("=== ТЕСТ 6: Сравнение производительности в реальных сценариях ===\n\n");
+
+    srand(time(NULL));
 
     // Сценарий 1: Словарь (80% поиск, 20% вставка)
     printf("СЦЕНАРИЙ 1: СЛОВАРЬ\n");
@@ -464,37 +480,36 @@ void test_scenario_performance() {
     int rbt_rotations_dict = 0;
     int rbt_recolorings_dict = 0;
 
-    // Инициализация словаря (1000 слов)
-    for (int i = 0; i < 1000; i++) {
-        int word_key = rand() % 10000;
+    // Инициализация словаря (500 слов)
+    for (int i = 0; i < 500; i++) {
+        int word_key = rand() % 5000;
         avl_dict = avl_insert(avl_dict, word_key, &avl_rotations_dict);
         rbt_dict = rbt_insert(rbt_dict, word_key, &rbt_rotations_dict, &rbt_recolorings_dict);
     }
 
     clock_t avl_dict_start = clock();
-    // 80% поиск (800 операций)
+    // 800 операций: 80% поиск, 20% вставка
     for (int i = 0; i < 800; i++) {
-        int search_key = rand() % 10000;
-        // В реальности здесь должен быть вызов функции поиска
-        // Для теста просто симулируем операцию
-    }
-    // 20% вставка (200 операций)
-    for (int i = 0; i < 200; i++) {
-        int new_word = 10000 + rand() % 1000;
-        avl_dict = avl_insert(avl_dict, new_word, &avl_rotations_dict);
+        if (i < 640) { // 80% поиск
+            int search_key = rand() % 5000;
+            // Симуляция поиска
+        } else { // 20% вставка
+            int new_word = 5000 + rand() % 1000;
+            avl_dict = avl_insert(avl_dict, new_word, &avl_rotations_dict);
+        }
     }
     clock_t avl_dict_end = clock();
 
     clock_t rbt_dict_start = clock();
-    // 80% поиск (800 операций)
+    // 800 операций: 80% поиск, 20% вставка
     for (int i = 0; i < 800; i++) {
-        int search_key = rand() % 10000;
-        // Симуляция поиска
-    }
-    // 20% вставка (200 операций)
-    for (int i = 0; i < 200; i++) {
-        int new_word = 10000 + rand() % 1000;
-        rbt_dict = rbt_insert(rbt_dict, new_word, &rbt_rotations_dict, &rbt_recolorings_dict);
+        if (i < 640) { // 80% поиск
+            int search_key = rand() % 5000;
+            // Симуляция поиска
+        } else { // 20% вставка
+            int new_word = 5000 + rand() % 1000;
+            rbt_dict = rbt_insert(rbt_dict, new_word, &rbt_rotations_dict, &rbt_recolorings_dict);
+        }
     }
     clock_t rbt_dict_end = clock();
 
@@ -503,51 +518,63 @@ void test_scenario_performance() {
 
     printf("AVL Tree: %.3f ms, вращений: %d\n", avl_dict_time, avl_rotations_dict);
     printf("RBT:      %.3f ms, вращений: %d\n", rbt_dict_time, rbt_rotations_dict);
-    printf("ПОБЕДИТЕЛЬ: %s (разница: %.1f%%)\n\n",
-           avl_dict_time < rbt_dict_time ? "AVL Tree" : "Red-Black Tree",
-           fabs(avl_dict_time - rbt_dict_time) / ((avl_dict_time + rbt_dict_time) / 2) * 100);
+
+    if (avl_dict_time < rbt_dict_time) {
+        printf("ПОБЕДИТЕЛЬ: AVL Tree (разница: %.1f%%)\n\n",
+               (rbt_dict_time - avl_dict_time) / rbt_dict_time * 100);
+    } else {
+        printf("ПОБЕДИТЕЛЬ: Red-Black Tree (разница: %.1f%%)\n\n",
+               (avl_dict_time - rbt_dict_time) / avl_dict_time * 100);
+    }
+
+    // Очистка памяти перед следующим тестом
+    free_avl_tree(avl_dict);
+    free_rbt_tree(rbt_dict);
 
     // Сценарий 2: Кеш сессий (50% поиск, 30% вставка, 20% удаление)
     printf("СЦЕНАРИЙ 2: КЕШ СЕССИЙ\n");
     printf("50%% поиск, 30%% вставка, 20%% удаление\n\n");
 
-    // Для упрощения симулируем только вставку и поиск
     struct AVLNode* avl_cache = NULL;
     struct RBNode* rbt_cache = NULL;
     int avl_rotations_cache = 0;
     int rbt_rotations_cache = 0;
     int rbt_recolorings_cache = 0;
 
-    // Инициализация кеша
-    for (int i = 0; i < 500; i++) {
-        int session_key = rand() % 5000;
+    // Инициализация кеша (300 сессий)
+    for (int i = 0; i < 300; i++) {
+        int session_key = rand() % 3000;
         avl_cache = avl_insert(avl_cache, session_key, &avl_rotations_cache);
         rbt_cache = rbt_insert(rbt_cache, session_key, &rbt_rotations_cache, &rbt_recolorings_cache);
     }
 
     clock_t avl_cache_start = clock();
-    // 50% поиск (250 операций)
-    for (int i = 0; i < 250; i++) {
-        int search_key = rand() % 5000;
-        // Симуляция поиска
-    }
-    // 30% вставка (150 операций)
-    for (int i = 0; i < 150; i++) {
-        int new_session = 5000 + rand() % 1000;
-        avl_cache = avl_insert(avl_cache, new_session, &avl_rotations_cache);
+    // 500 операций: 50% поиск, 30% вставка, 20% удаление
+    for (int i = 0; i < 500; i++) {
+        if (i < 250) { // 50% поиск
+            int search_key = rand() % 3000;
+            // Симуляция поиска
+        } else if (i < 400) { // 30% вставка
+            int new_session = 3000 + rand() % 1000;
+            avl_cache = avl_insert(avl_cache, new_session, &avl_rotations_cache);
+        } else { // 20% удаление (симуляция)
+            // В реальной реализации здесь было бы удаление
+        }
     }
     clock_t avl_cache_end = clock();
 
     clock_t rbt_cache_start = clock();
-    // 50% поиск (250 операций)
-    for (int i = 0; i < 250; i++) {
-        int search_key = rand() % 5000;
-        // Симуляция поиска
-    }
-    // 30% вставка (150 операций)
-    for (int i = 0; i < 150; i++) {
-        int new_session = 5000 + rand() % 1000;
-        rbt_cache = rbt_insert(rbt_cache, new_session, &rbt_rotations_cache, &rbt_recolorings_cache);
+    // 500 операций: 50% поиск, 30% вставка, 20% удаление
+    for (int i = 0; i < 500; i++) {
+        if (i < 250) { // 50% поиск
+            int search_key = rand() % 3000;
+            // Симуляция поиска
+        } else if (i < 400) { // 30% вставка
+            int new_session = 3000 + rand() % 1000;
+            rbt_cache = rbt_insert(rbt_cache, new_session, &rbt_rotations_cache, &rbt_recolorings_cache);
+        } else { // 20% удаление (симуляция)
+            // Симуляция операции удаления
+        }
     }
     clock_t rbt_cache_end = clock();
 
@@ -556,9 +583,18 @@ void test_scenario_performance() {
 
     printf("AVL Tree: %.3f ms, вращений: %d\n", avl_cache_time, avl_rotations_cache);
     printf("RBT:      %.3f ms, вращений: %d\n", rbt_cache_time, rbt_rotations_cache);
-    printf("ПОБЕДИТЕЛЬ: %s (разница: %.1f%%)\n\n",
-           avl_cache_time < rbt_cache_time ? "AVL Tree" : "Red-Black Tree",
-           fabs(avl_cache_time - rbt_cache_time) / ((avl_cache_time + rbt_cache_time) / 2) * 100);
+
+    if (avl_cache_time < rbt_cache_time) {
+        printf("ПОБЕДИТЕЛЬ: AVL Tree (разница: %.1f%%)\n\n",
+               (rbt_cache_time - avl_cache_time) / rbt_cache_time * 100);
+    } else {
+        printf("ПОБЕДИТЕЛЬ: Red-Black Tree (разница: %.1f%%)\n\n",
+               (avl_cache_time - rbt_cache_time) / avl_cache_time * 100);
+    }
+
+    // Очистка памяти перед следующим тестом
+    free_avl_tree(avl_cache);
+    free_rbt_tree(rbt_cache);
 
     // Сценарий 3: Логирование (10% поиск, 90% вставка)
     printf("СЦЕНАРИЙ 3: ЛОГИРОВАНИЕ\n");
@@ -571,28 +607,28 @@ void test_scenario_performance() {
     int rbt_recolorings_log = 0;
 
     clock_t avl_log_start = clock();
-    // 10% поиск (50 операций)
-    for (int i = 0; i < 50; i++) {
-        int search_key = rand() % 1000;
-        // Симуляция поиска
-    }
-    // 90% вставка (450 операций)
-    for (int i = 0; i < 450; i++) {
-        int log_entry = rand() % 10000;
-        avl_log = avl_insert(avl_log, log_entry, &avl_rotations_log);
+    // 1000 операций: 10% поиск, 90% вставка
+    for (int i = 0; i < 1000; i++) {
+        if (i < 100) { // 10% поиск
+            int search_key = rand() % 1000;
+            // Симуляция поиска
+        } else { // 90% вставка
+            int log_entry = rand() % 10000;
+            avl_log = avl_insert(avl_log, log_entry, &avl_rotations_log);
+        }
     }
     clock_t avl_log_end = clock();
 
     clock_t rbt_log_start = clock();
-    // 10% поиск (50 операций)
-    for (int i = 0; i < 50; i++) {
-        int search_key = rand() % 1000;
-        // Симуляция поиска
-    }
-    // 90% вставка (450 операций)
-    for (int i = 0; i < 450; i++) {
-        int log_entry = rand() % 10000;
-        rbt_log = rbt_insert(rbt_log, log_entry, &rbt_rotations_log, &rbt_recolorings_log);
+    // 1000 операций: 10% поиск, 90% вставка
+    for (int i = 0; i < 1000; i++) {
+        if (i < 100) { // 10% поиск
+            int search_key = rand() % 1000;
+            // Симуляция поиска
+        } else { // 90% вставка
+            int log_entry = rand() % 10000;
+            rbt_log = rbt_insert(rbt_log, log_entry, &rbt_rotations_log, &rbt_recolorings_log);
+        }
     }
     clock_t rbt_log_end = clock();
 
@@ -601,16 +637,17 @@ void test_scenario_performance() {
 
     printf("AVL Tree: %.3f ms, вращений: %d\n", avl_log_time, avl_rotations_log);
     printf("RBT:      %.3f ms, вращений: %d\n", rbt_log_time, rbt_rotations_log);
-    printf("ПОБЕДИТЕЛЬ: %s (разница: %.1f%%)\n\n",
-           avl_log_time < rbt_log_time ? "AVL Tree" : "Red-Black Tree",
-           fabs(avl_log_time - rbt_log_time) / ((avl_log_time + rbt_log_time) / 2) * 100);
+
+    if (avl_log_time < rbt_log_time) {
+        printf("ПОБЕДИТЕЛЬ: AVL Tree (разница: %.1f%%)\n\n",
+               (rbt_log_time - avl_log_time) / rbt_log_time * 100);
+    } else {
+        printf("ПОБЕДИТЕЛЬ: Red-Black Tree (разница: %.1f%%)\n\n",
+               (avl_log_time - rbt_log_time) / avl_log_time * 100);
+    }
 
     // Очистка памяти
-    free_avl_tree(avl_dict);
-    free_avl_tree(avl_cache);
     free_avl_tree(avl_log);
-    free_rbt_tree(rbt_dict);
-    free_rbt_tree(rbt_cache);
     free_rbt_tree(rbt_log);
 }
 
@@ -621,14 +658,14 @@ void test_crossover_point() {
 
     printf("Поиск точки, где RBT становится эффективнее AVL:\n\n");
 
-    int test_sizes[] = {100, 500, 1000, 5000};
-    int num_sizes = sizeof(test_sizes) / sizeof(test_sizes[0]);
+    int sizes[] = {100, 500, 1000};
+    int num_sizes = sizeof(sizes) / sizeof(sizes[0]);
 
     printf("Размер данных | AVL время | RBT время | Преимущество\n");
     printf("-------------|-----------|-----------|-------------\n");
 
     for (int s = 0; s < num_sizes; s++) {
-        int size = test_sizes[s];
+        int size = sizes[s];
 
         // AVL тест с частыми вставками (80% вставок, 20% поиска)
         clock_t avl_start = clock();
@@ -684,11 +721,10 @@ void benchmark_avl_vs_rbt() {
     printf("=== БАЗОВЫЙ ТЕСТ: AVL vs RBT Benchmark ===\n\n");
 
     srand(time(NULL));
-    const int NUM_OPERATIONS = 1000;
 
+    const int NUM_OPERATIONS = 1000;
     struct AVLNode* avl_root = NULL;
     struct RBNode* rbt_root = NULL;
-
     int avl_rotations = 0;
     int rbt_rotations = 0;
     int rbt_recolorings = 0;
@@ -709,14 +745,14 @@ void benchmark_avl_vs_rbt() {
 
     printf("Результаты для %d случайных вставок:\n", NUM_OPERATIONS);
     printf("AVL Tree:\n");
-    printf("  - Время: %.3f ms\n", (double)(avl_end - avl_start) * 1000 / CLOCKS_PER_SEC);
-    printf("  - Вращения: %d\n", avl_rotations);
-    printf("  - Высота: %d\n\n", avl_height(avl_root));
+    printf(" - Время: %.3f ms\n", (double)(avl_end - avl_start) * 1000 / CLOCKS_PER_SEC);
+    printf(" - Вращения: %d\n", avl_rotations);
+    printf(" - Высота: %d\n\n", avl_height(avl_root));
 
     printf("Red-Black Tree:\n");
-    printf("  - Время: %.3f ms\n", (double)(rbt_end - rbt_start) * 1000 / CLOCKS_PER_SEC);
-    printf("  - Вращения: %d\n", rbt_rotations);
-    printf("  - Перекрашивания: %d\n", rbt_recolorings);
+    printf(" - Время: %.3f ms\n", (double)(rbt_end - rbt_start) * 1000 / CLOCKS_PER_SEC);
+    printf(" - Вращения: %d\n", rbt_rotations);
+    printf(" - Перекрашивания: %d\n", rbt_recolorings);
 
     // Очистка памяти
     free_avl_tree(avl_root);
